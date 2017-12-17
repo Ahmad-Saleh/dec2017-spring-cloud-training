@@ -5,6 +5,7 @@ import com.progressoft.training.paymentsapp.repository.PaymentsRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @SpringBootApplication
+@EnableCircuitBreaker
 public class PaymentsAppApplication {
 
     public static void main(String[] args) {
