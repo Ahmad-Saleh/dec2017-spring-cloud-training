@@ -74,7 +74,7 @@ public class PaymentsAppApplication {
     }
 
     @Bean
-    RestTemplate restTemplate(){
+    RestTemplate getRestTemplate(){
         return new RestTemplate();
     }
 }

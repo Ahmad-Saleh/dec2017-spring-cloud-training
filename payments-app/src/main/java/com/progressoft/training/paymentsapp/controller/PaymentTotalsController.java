@@ -3,11 +3,10 @@ package com.progressoft.training.paymentsapp.controller;
 import com.progressoft.training.paymentsapp.entity.Payment;
 import com.progressoft.training.paymentsapp.entity.PaymentTotals;
 import com.progressoft.training.paymentsapp.repository.PaymentsRepository;
-import org.springframework.beans.factory.annotation.Value;
+import com.progressoft.training.paymentsapp.service.ExchangeServiceClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -15,15 +14,12 @@ import java.util.*;
 @RestController
 public class PaymentTotalsController {
 
-    private RestTemplate restTemplate;
     private PaymentsRepository repository;
+    private ExchangeServiceClient exchangeServiceClient;
 
-    @Value("${exchange-service.url}")
-    private String baseUrl;
-
-    public PaymentTotalsController(RestTemplate restTemplate, PaymentsRepository repository) {
-        this.restTemplate = restTemplate;
+    public PaymentTotalsController(PaymentsRepository repository, ExchangeServiceClient exchangeServiceClient) {
         this.repository = repository;
+        this.exchangeServiceClient = exchangeServiceClient;
     }
 
     @RequestMapping("/totals")
@@ -40,14 +36,7 @@ public class PaymentTotalsController {
     }
 
     private BigDecimal exchangeAmount(BigDecimal amount, String fromCurrencyCode, String toCurrencyCode) {
-        return amount.multiply(getExchangeRate(fromCurrencyCode, toCurrencyCode));
-    }
-
-    private BigDecimal getExchangeRate(String fromCurrencyCode, String toCurrencyCode) {
-        Map<String, Object> parametersMap = new HashMap<>();
-        parametersMap.put("from", fromCurrencyCode);
-        parametersMap.put("to", toCurrencyCode);
-        return restTemplate.getForEntity(baseUrl, BigDecimal.class, parametersMap).getBody();
+        return amount.multiply(exchangeServiceClient.getExchangeRate(fromCurrencyCode, toCurrencyCode));
     }
 
 }
